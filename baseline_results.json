@@ -1,0 +1,164 @@
+{
+  "model": "facebook/bart-large-mnli",
+  "n": 26,
+  "seed": 42,
+  "held_out": true,
+  "used_definitions": true,
+  "scores": {
+    "n": 26,
+    "accuracy": 0.8076923076923077,
+    "f1_macro": 0.6739316239316239,
+    "per_label": {
+      "opinion": {
+        "precision": 1.0,
+        "recall": 0.25,
+        "f1": 0.4,
+        "support": 4
+      },
+      "question": {
+        "precision": 0.8095238095238095,
+        "recall": 0.9444444444444444,
+        "f1": 0.8717948717948718,
+        "support": 18
+      },
+      "solution": {
+        "precision": 0.75,
+        "recall": 0.75,
+        "f1": 0.75,
+        "support": 4
+      }
+    }
+  },
+  "predictions": [
+    {
+      "text": "Python install manager",
+      "gold": "question",
+      "predicted": "solution"
+    },
+    {
+      "text": "How does reverse engineering actually work, especially with AI?",
+      "gold": "question",
+      "predicted": "question"
+    },
+    {
+      "text": "How to search for solutions?",
+      "gold": "question",
+      "predicted": "question"
+    },
+    {
+      "text": "Is it possible to self-learn and land a job?",
+      "gold": "question",
+      "predicted": "question"
+    },
+    {
+      "text": "In response to the guy asking for tutorial videos to show WHY and not just how, I\u2019ve been watching this guy for the last few months who records himself building his clients websites and actually explains how and why he does certain things and how to apply everything I\u2019ve learned.",
+      "gold": "solution",
+      "predicted": "solution"
+    },
+    {
+      "text": "Trying to build a reddit search engine",
+      "gold": "question",
+      "predicted": "question"
+    },
+    {
+      "text": "How to research things you don't know the right term of?",
+      "gold": "question",
+      "predicted": "question"
+    },
+    {
+      "text": "I got scammed out of $9,000 by a fake Big Tech AI Bootcamp, Solely Bootcamp.",
+      "gold": "opinion",
+      "predicted": "question"
+    },
+    {
+      "text": "Please do not downvote someone who is asking for help in solving a code that looks stupid.",
+      "gold": "opinion",
+      "predicted": "question"
+    },
+    {
+      "text": "Do you know any programming tutorials where somebody explains how to write an app from the architecture point of view?",
+      "gold": "question",
+      "predicted": "question"
+    },
+    {
+      "text": "Most beginner tutorials are really poorly done. Here's one that I found that breaks things down very well.",
+      "gold": "solution",
+      "predicted": "solution"
+    },
+    {
+      "text": "Googling everything",
+      "gold": "opinion",
+      "predicted": "opinion"
+    },
+    {
+      "text": "Looking for C++ textbook that is friendly like Stewart Calculus for math",
+      "gold": "question",
+      "predicted": "question"
+    },
+    {
+      "text": "am I the only one to believe tutorial point is a useless piece of garbage ?",
+      "gold": "opinion",
+      "predicted": "question"
+    },
+    {
+      "text": "Programming project tutorials that hold your hand throughout the way but do not make you literally copy their code",
+      "gold": "question",
+      "predicted": "question"
+    },
+    {
+      "text": "Looking for Comprehensive Project Tutorials",
+      "gold": "question",
+      "predicted": "question"
+    },
+    {
+      "text": "Is it okay to search for solutions online",
+      "gold": "question",
+      "predicted": "question"
+    },
+    {
+      "text": "Stuck in tutorial hell and not sure how to transition to actual projects",
+      "gold": "question",
+      "predicted": "question"
+    },
+    {
+      "text": "How to actually learn programming?",
+      "gold": "question",
+      "predicted": "question"
+    },
+    {
+      "text": "What\u2019s a decent problem solving site?",
+      "gold": "question",
+      "predicted": "question"
+    },
+    {
+      "text": "I want to learn C",
+      "gold": "question",
+      "predicted": "question"
+    },
+    {
+      "text": "To all the newbies who ask these questions/make these posts:",
+      "gold": "solution",
+      "predicted": "question"
+    },
+    {
+      "text": "Tips on how to approach personal projects for beginners",
+      "gold": "solution",
+      "predicted": "solution"
+    },
+    {
+      "text": "I need to write a program that searches a specific webpage for certain keywords and criteria and notify me.",
+      "gold": "question",
+      "predicted": "question"
+    },
+    {
+      "text": "Can you recommend a resource that focuses on improving thinking and problem solving skills?",
+      "gold": "question",
+      "predicted": "question"
+    },
+    {
+      "text": "I spend more time Googling tutorial assumptions than watching the tutorial. Am I learning wrong, or do tutorials skip too much?",
+      "gold": "question",
+      "predicted": "question"
+    }
+  ]
+}

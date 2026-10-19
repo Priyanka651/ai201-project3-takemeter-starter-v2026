@@ -173,15 +173,9 @@ The test set contains only four `opinion` and four `solution` examples. Therefor
 | F1 — `opinion`   | PENDING  | 0.000   | PENDING    |
 | F1 — `solution`  | PENDING  | 0.000   | PENDING    |
 
-**What I predicted before I looked:** No prediction was recorded before examining the results, so a retrospective prediction is not reported.
+**What I predicted before I looked:** I did not record a prediction before seeing the results, so I cannot honestly report a pre-results prediction.
 
-**What the gap actually means:** The baseline comparison cannot be completed until the baseline metrics are available.
-
-However, the trained model achieved 69.2% accuracy while failing to correctly identify any `opinion` or `solution` examples in the test set.
-
-The test set contains 18 questions out of 26 posts, meaning a classifier that predicts `question` for every example would also achieve 69.2% accuracy.
-
-This demonstrates why accuracy alone is insufficient for evaluating an imbalanced classification problem.
+**What the gap actually means:** The baseline model performed better than the fine-tuned DistilBERT model. The trained model predicted every test example as `question`, resulting in zero F1 scores for `opinion` and `solution`. This suggests that class imbalance, limited training data, or label quality may be affecting performance.
 
 ---
 
