@@ -1,396 +1,369 @@
 # TakeMeter
 
-> ### 👋 Start here
+> 👋 **Start here**
 >
-> **New to this repo? Read [RUNNING.md](RUNNING.md) first** — setup, the
-> notebook, the baseline, and what to do when something breaks.
+> New to this repo? Read [RUNNING.md](RUNNING.md) first for setup instructions, notebook execution, baseline testing, and troubleshooting.
 >
-> Once `python test.py` passes:
->
-> ```bash
-> head -5 data/practice_labels.csv     # the shape your labels.csv needs
-> ```
->
-> Then open `takemeter.ipynb` **in this folder** — in VS Code, or with
-> `jupyter notebook` if you prefer. Pick the kernel: the `.venv` inside this
-> project. Run section 1, which reports the hardware you'll be training on.
-> Everything else waits until you have data.
->
-> Nothing to upload, nothing to connect, no accounts and no keys. The notebook
-> runs on your machine and writes next to your code.
->
-> **The rest of this file is your submission.** Fill it in as you go.
+> Open `takemeter.ipynb` in VS Code and select the `.venv` Python kernel.
 
 ---
 
-<!-- ─────────────────────────────────────────────────────────────────────────
-     HOW TO USE THIS FILE
-
-     Unit 5 asks for the first five sections. Unit 6 adds the five below them.
-
-     Everything is pasted as TEXT. No screenshots, no images.
-
-     ⚠️ The confusion matrix especially. The notebook prints one as a markdown
-     table, ready to copy. A screenshot of a matrix earns nothing. Paste the
-     table.
-     ───────────────────────────────────────────────────────────────────────── -->
-
-<!-- ═══════════════════════ UNIT 5 — THE BUILD ═══════════════════════ -->
+<!-- UNIT 5 — THE BUILD -->
 
 ## What This Does
 
-<!-- Your community, and what your classifier sorts posts into. Three or four
-     sentences. -->
+TakeMeter is a machine learning text classification project that categorizes posts from the Reddit community r/learnprogramming into three categories: `question`, `opinion`, and `solution`.
 
+The goal is to understand how a pretrained language model can be fine-tuned for text classification, evaluate its performance, identify classification errors, and improve the model based on evidence.
 
+The project uses DistilBERT and evaluates model performance using accuracy, macro F1, class-specific F1 scores, and a confusion matrix.
 
 ---
 
 ## Label Taxonomy
 
-<!-- Each label: a one-sentence definition and two real examples from your
-     reading. Then your decision rule for the hardest boundary.
+### `question`
 
-     The decision rule is worth a point on its own and it's the thing most
-     people leave out. Every taxonomy has a hardest boundary. Name yours. -->
+**Definition:** Posts where users ask for programming help, guidance, explanations, or learning resources.
 
-### `label_one`
+**Example 1:** "How do you get better at coding without constantly following tutorials?"
 
-**Definition:**
+**Example 2:** "Best resources to learn Git as a complete beginner?"
 
-**Example 1:**
->
+### `opinion`
 
-**Example 2:**
->
+**Definition:** Posts primarily expressing personal beliefs, concerns, or viewpoints about programming and technology.
 
-### `label_two`
+**Example 1:** "What is the point of learning if AI can (or will eventually) do anything better than anyone"
 
-**Definition:**
+**Example 2:** "IEEE Spectrum: AI Efficiency Could Cost Us the Next Generation of Experts"
 
-**Example 1:**
->
+### `solution`
 
-**Example 2:**
->
+**Definition:** Posts primarily sharing working solutions, practical tools, or learning resources rather than requesting help.
 
-### The hardest boundary
+**Example 1:** "Free and open-source visual Git learning tools / resources"
 
-**Which two labels:**
+**Example 2:** "im kinda proud of this solution i wrote even though it was an 'easy' i still felt like i grew a lot"
 
-**The decision rule I used every time:**
-<!-- e.g. "If the post names a specific checkable fact, it's `analysis`, even
-     if the tone is heated." -->
+### The Hardest Boundary
 
+**Which two labels:** `question` and `opinion`
 
+**Decision rule:** If the primary purpose of a post is to request help or advice, classify it as `question`, even if it contains personal opinions or concerns. If the primary purpose is to express a viewpoint or argument and invite discussion, classify it as `opinion`.
 
 ---
 
 ## The Dataset
 
-<!-- Where you collected from, how you labelled, your counts, and three hard
-     cases. -->
+**Where the posts came from:** Reddit community r/learnprogramming.
 
-**Where the posts came from:**
-
-**How I labelled them:** <!-- Cold first? Pre-labelled with AI and corrected?
-Say so plainly — the disclosure is required, not penalised. -->
+**How I labelled them:** AI assistance was used to suggest labels for the collected posts. The dataset was reviewed, but the assignment's independent pre-AI labelling exercise of 20 posts was not completed.
 
 **Counts per label:**
 
-| Label | Count | Share |
-|---|---|---|
-|  |  |  |
-|  |  |  |
-|  |  |  |
-| **Total** |  | 100% |
+| Label     |   Count |    Share |
+| --------- | ------: | -------: |
+| question  |     121 |   69.94% |
+| opinion   |      26 |   15.03% |
+| solution  |      26 |   15.03% |
+| **Total** | **173** | **100%** |
 
-**Three hard cases**
+The dataset contains 173 posts, below the assignment's requested 200 posts.
 
-<!-- Any post that made you pause: what it was, which two labels it could have
-     been, and what you chose. These are worth more than the easy 190. -->
+The `question` category represents almost 70% of the dataset. This imbalance may cause the model to favor the majority class.
 
-**1.**
-> *The post:*
->
-> *Could have been:*
->
-> *I chose, because:*
+Many posts contain only their titles rather than complete post bodies. This reduces the context available to the classifier.
 
-**2.**
-> *The post:*
->
-> *Could have been:*
->
-> *I chose, because:*
+### Three Hard Cases
 
-**3.**
-> *The post:*
->
-> *Could have been:*
->
-> *I chose, because:*
+**1. AI and learning programming**
+
+- **The post:** "What is the point of learning if AI can (or will eventually) do anything better than anyone"
+- **Could have been:** `question` or `opinion`
+- **I chose:** `opinion`, because the post primarily raises a viewpoint about AI's impact on learning programming rather than requesting a specific programming solution.
+
+**2. Sharing a programming achievement**
+
+- **The post:** "im kinda proud of this solution i wrote even though it was an 'easy' i still felt like i grew a lot"
+- **Could have been:** `opinion` or `solution`
+- **Existing label:** `solution`
+- **Why it is difficult:** The post mentions a solution, but its main purpose may be sharing a personal achievement. This example needs manual review to determine whether `opinion` is more appropriate.
+
+**3. Sharing an article about AI**
+
+- **The post:** "IEEE Spectrum: AI Efficiency Could Cost Us the Next Generation of Experts"
+- **Could have been:** `opinion` or `solution`
+- **I chose:** `opinion`, because the title introduces a viewpoint about AI and expertise rather than presenting a direct programming solution.
+
+These examples show why clear label definitions and manual review are important.
 
 ---
 
 ## The Training Run
 
-<!-- Your starting model, your settings, and anything you changed and why. -->
+**Base model:** `distilbert-base-uncased`
 
-**Base model:**
+**Model type:** DistilBERT for sequence classification.
 
-**Settings:** <!-- epochs, learning rate, batch size, seed -->
+**Training settings:**
 
-**Anything I changed from the defaults, and why:**
+| Setting             | Value                               |
+| ------------------- | ----------------------------------- |
+| Model               | DistilBERT                          |
+| Labels              | question, opinion, solution         |
+| Epochs              | 3                                   |
+| Learning rate       | 0.00002                             |
+| Batch size          | 16                                  |
+| Initial random seed | 42                                  |
+| Additional seeds    | 7, 2024                             |
+| Hardware            | CPU                                 |
+| Framework           | PyTorch / Hugging Face Transformers |
 
-**Split sizes:** <!-- train / val / test, and per-label counts in the test
-split. If a label had fewer than about 8 in test, say so — it explains a lot
-of next unit's variance. -->
+**Anything I changed from the defaults, and why:** The project used three classification labels and repeated training with three random seeds to examine the stability of the evaluation results. Other changes from the starter defaults have not been independently verified.
 
+**Split sizes:**
 
+| Label     |   Train | Validation |   Test |
+| --------- | ------: | ---------: | -----: |
+| question  |      85 |         18 |     18 |
+| opinion   |      18 |          4 |      4 |
+| solution  |      18 |          4 |      4 |
+| **Total** | **121** |     **26** | **26** |
+
+The dataset was split into approximately 70% training, 15% validation, and 15% testing.
+
+The test set contains only four `opinion` and four `solution` examples. Therefore, performance estimates for these categories are based on very small samples.
 
 ---
 
 ## How I Used AI
 
-<!-- Two specific moments — what you asked, what came back, what you changed.
+### Moment 1
 
-     ⚠️ Plus disclosure of any pre-labelling. If you had a model pre-label a
-     batch and then read and corrected every one, say that. It's an allowed
-     workflow and disclosing it costs you nothing. Not disclosing it is the
-     problem. -->
+- **What I asked for:** Help reviewing Reddit posts and identifying possible classification labels.
+- **What came back:** Suggestions for the categories `question`, `opinion`, and `solution`.
+- **What I changed:** I used these categories in the project and documented definitions, examples, and a decision rule.
 
-**Moment 1**
+### Moment 2
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- **What I asked for:** Help correcting README Markdown formatting.
+- **What came back:** A corrected README structure with consistent headings, examples, and decision rules.
+- **What I changed:** I updated the README formatting and documentation.
 
-**Moment 2**
+### Moment 3
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- **What I asked for:** Help understanding model training results, confusion matrix output, and Git commands.
+- **What came back:** Explanations of evaluation metrics, model limitations, and steps for saving the project.
+- **What I changed:** I documented the actual results and identified areas needing improvement.
 
-**Pre-labelling disclosure:**
-
-<!-- ═══════════════════════ UNIT 6 — THE TEST ═══════════════════════
-
-     Don't fill these in during unit 5.
-     ═══════════════════════════════════════════════════════════════════ -->
+**Pre-labelling disclosure:** AI assistance was used during dataset labelling. The required independent pre-AI labelling of 20 posts was not completed. The dataset may contain incorrectly assigned labels, which could affect model performance.
 
 ---
 
+<!-- UNIT 6 — THE TEST -->
+
 ## Baseline vs. Trained
 
-<!-- Both models on the same posts. `python baseline.py --trained results.json`
-     prints this table for you. -->
+| Measure          | Baseline | Trained | Difference |
+| ---------------- | -------- | ------- | ---------- |
+| Overall accuracy | PENDING  | 0.692   | PENDING    |
+| Macro F1         | PENDING  | 0.273   | PENDING    |
+| F1 — `question`  | PENDING  | 0.818   | PENDING    |
+| F1 — `opinion`   | PENDING  | 0.000   | PENDING    |
+| F1 — `solution`  | PENDING  | 0.000   | PENDING    |
 
-| Measure | Baseline | Trained | Difference |
-|---|---|---|---|
-| Overall accuracy |  |  |  |
-| Macro F1 |  |  |  |
-| F1 — `label_one` |  |  |  |
-| F1 — `label_two` |  |  |  |
+**What I predicted before I looked:** No prediction was recorded before examining the results, so a retrospective prediction is not reported.
 
-**What I predicted before I looked:**
-<!-- Milestone 1 asks you to write this BEFORE seeing the trained numbers. A
-     prediction made afterwards isn't one. -->
+**What the gap actually means:** The baseline comparison cannot be completed until the baseline metrics are available.
 
-**What the gap actually means:**
-<!-- If the baseline matched your trained model, your fine-tuning added
-     nothing — and that is a real finding, not a failure. Say it plainly. -->
+However, the trained model achieved 69.2% accuracy while failing to correctly identify any `opinion` or `solution` examples in the test set.
 
+The test set contains 18 questions out of 26 posts, meaning a classifier that predicts `question` for every example would also achieve 69.2% accuracy.
 
+This demonstrates why accuracy alone is insufficient for evaluating an imbalanced classification problem.
 
 ---
 
 ## Run Log — Before
 
-<!-- Five criteria across three seeds. The notebook's section 6 prints the
-     spread table; the Target and Verdict columns are yours. -->
+The model was trained and evaluated using three random seeds.
 
-| Criterion | Target | Seed 42 | Seed 7 | Seed 2024 | Verdict |
-|---|---|---|---|---|---|
-| 1.  |  |  |  |  |  |
-| 2.  |  |  |  |  |  |
-| 3.  |  |  |  |  |  |
-| 4.  |  |  |  |  |  |
-| 5.  |  |  |  |  |  |
+| Measure          | Seed 42 | Seed 7 | Seed 2024 | Spread |
+| ---------------- | ------: | -----: | --------: | -----: |
+| Overall accuracy |   0.692 |  0.692 |     0.692 |  0.000 |
+| Macro F1         |   0.273 |  0.273 |     0.273 |  0.000 |
+| F1 — `question`  |   0.818 |  0.818 |     0.818 |  0.000 |
+| F1 — `opinion`   |   0.000 |  0.000 |     0.000 |  0.000 |
+| F1 — `solution`  |   0.000 |  0.000 |     0.000 |  0.000 |
 
-### Confusion matrix
+All three seeds produced identical evaluation metrics.
 
-<!-- ⚠️ TYPED AS A MARKDOWN TABLE. The notebook prints one ready to paste.
-     An image of a matrix earns nothing. -->
+This indicates that the observed failure to recognize minority classes was consistent across these runs.
 
-| true \ predicted |  |  |  |
-|---|---|---|---|
-| **** |  |  |  |
-| **** |  |  |  |
-| **** |  |  |  |
+### Evaluation Against the Five Criteria
 
-**My biggest off-diagonal number, and what it means:**
-<!-- Not "the model made mistakes" — WHICH boundary it didn't learn, and which
-     direction. "7 real analysis posts were called hot_take and only 3 went the
-     other way" is a direction, not just an error rate. -->
+| Criterion                   | Target | Seed 42 |  Seed 7 | Seed 2024 | Verdict |
+| --------------------------- | ------ | ------: | ------: | --------: | ------- |
+| Overall accuracy            | ≥ 0.70 |   0.692 |   0.692 |     0.692 | FAIL    |
+| Question F1                 | ≥ 0.70 |   0.818 |   0.818 |     0.818 | PASS    |
+| Opinion F1                  | ≥ 0.55 |   0.000 |   0.000 |     0.000 | FAIL    |
+| Solution F1                 | ≥ 0.55 |   0.000 |   0.000 |     0.000 | FAIL    |
+| High-confidence correctness | ≥ 0.75 | PENDING | PENDING |   PENDING | PENDING |
 
+**Additional dataset constraint:** No label may exceed 70% of the dataset. The largest label, `question`, represents 69.94%, so this constraint passes numerically.
 
+### Confusion Matrix
+
+| True / Predicted | question | opinion | solution |
+| ---------------- | -------: | ------: | -------: |
+| **question**     |       18 |       0 |        0 |
+| **opinion**      |        4 |       0 |        0 |
+| **solution**     |        4 |       0 |        0 |
+
+**My biggest off-diagonal number, and what it means:** Four actual `opinion` posts were incorrectly predicted as `question`. Another four actual `solution` posts were also incorrectly predicted as `question`.
+
+The model predicted `question` for all 26 test examples.
+
+This shows a strong bias toward the majority class.
 
 ---
 
 ## Verdicts and Diagnoses
 
-<!-- MET or MISSED against LAST UNIT's target. The target has to hold across
-     all three seeds, not turn up sometimes. -->
+| #   | Criterion                   | Target | Verdict | How I Decided                                  |
+| --- | --------------------------- | ------ | ------- | ---------------------------------------------- |
+| 1   | Overall accuracy            | ≥ 70%  | FAIL    | Achieved 69.2% across all seeds                |
+| 2   | Question F1                 | ≥ 0.70 | PASS    | Achieved 0.818 across all seeds                |
+| 3   | Opinion F1                  | ≥ 0.55 | FAIL    | Achieved 0.000 across all seeds                |
+| 4   | Solution F1                 | ≥ 0.55 | FAIL    | Achieved 0.000 across all seeds                |
+| 5   | High-confidence correctness | ≥ 75%  | PENDING | Exact criterion calculation needs verification |
 
-| # | Criterion | Target | Verdict | How I decided |
-|---|---|---|---|---|
-| 1 |  |  |  |  |
-| 2 |  |  |  |  |
-| 3 |  |  |  |  |
-| 4 |  |  |  |  |
-| 5 |  |  |  |  |
+### Diagnoses
 
-**Diagnoses**
+**1. Class imbalance**
 
-<!-- For each miss: the cause, and how you know. The four common causes are:
-     too few examples for a label, a boundary you applied inconsistently, a
-     genuinely hard label pair, and a task the model can't reach from this
-     much data.
+The dataset contains 121 `question` examples but only 26 examples each for `opinion` and `solution`.
 
-     ⚠️ Use your agreement report as evidence. It is the only instrument you
-     have that can tell a LABELLING problem from a MODEL problem, and this
-     section is graded on whether you used it that way. -->
+The model may have learned to favor the majority class.
 
+**2. Minority classes were not recognized**
 
+All 26 test posts were predicted as `question`, causing both minority-class F1 scores to be zero.
+
+**3. Small test samples**
+
+The test set contains only four examples each for `opinion` and `solution`. A single corrected prediction would have a substantial effect on their metrics.
+
+**4. Possible labelling problems**
+
+Some posts are difficult to classify based on their titles alone. Ambiguous or incorrect labels may make it harder for the model to learn meaningful distinctions.
+
+**5. Stable results do not guarantee a good model**
+
+All three seeds produced the same scores. This confirms consistent behavior across the tested seeds, but that behavior was consistently poor for the minority classes.
 
 ---
 
 ## Agreement Report
 
-<!-- Your rate against the staff set, and every disagreement adjudicated.
+**Agreement rate:** PENDING — independent 30-example agreement evaluation has not been completed or its results have not been supplied.
 
-     Remember you labelled these 30 under the STAFF taxonomy in
-     data/staff_taxonomy.md, not your own — so every argument below is made
-     from those definitions and those decision rules. -->
-
-**Agreement rate:** ___ / 30 = ___%
-
-<!-- Nobody grades this number. A 60% who argues every disagreement from the
-     stated rules beats a 95% who wrote "staff was right" nine times. Several
-     of the 30 were chosen because they're genuinely ambiguous — you should be
-     winning some of these. -->
-
-**Disagreements**
-
-<!-- Three lines each: the post, both labels, and who you think is right and
-     why — grounded in the staff definitions you were both applying.
-
-     Then sort each into one of three piles:
-       (a) the rule covered it and I applied it loosely → a consistency problem
-       (b) the rule genuinely doesn't say               → a gap in the definitions
-       (c) the rule is ambiguous here and my reading is defensible → argue it.
-           This is a legitimate win.
-
-     Pile (a) is the one that matters most for your diagnosis: if you applied a
-     written rule two different ways on 30 posts, that is direct evidence about
-     what you did across your own 200. -->
+### Disagreements
 
 **1.**
-> *The post:*
->
-> *Staff said / I said:*
->
-> *My call, and why:*
->
-> *Which pile:*
+
+- **The post:** PENDING
+- **Staff said / I said:** PENDING
+- **My call, and why:** PENDING
+- **Which pile:** PENDING
 
 **2.**
-> *The post:*
->
-> *Staff said / I said:*
->
-> *My call, and why:*
->
-> *Which pile:*
 
-**What the pattern in my disagreements tells me:**
+- **The post:** PENDING
+- **Staff said / I said:** PENDING
+- **My call, and why:** PENDING
+- **Which pile:** PENDING
 
+**What the pattern in my disagreements tells me:** The agreement report is needed before determining whether the main labelling problem is confusion between `question` and `opinion`, confusion between `opinion` and `solution`, or inconsistent application of the taxonomy.
 
+The current model results alone cannot establish the exact source of label disagreement.
 
 ---
 
 ## The Improvement
 
-**What I changed:**
+**What I changed:** PENDING — no completed improvement experiment has been documented.
 
-**Which diagnosis pointed at it:**
+**Which diagnosis pointed at it:** The initial evaluation identified majority-class bias and possible label ambiguity as the main issues to investigate.
+
+A possible next experiment is to review ambiguous labels and address class imbalance, then retrain and compare the results using the same evaluation procedure.
 
 ### Run Log — After
 
-| Criterion | Target | Seed 42 | Seed 7 | Seed 2024 | Verdict |
-|---|---|---|---|---|---|
-| 1.  |  |  |  |  |  |
-| 2.  |  |  |  |  |  |
-| 3.  |  |  |  |  |  |
-| 4.  |  |  |  |  |  |
-| 5.  |  |  |  |  |  |
+| Measure          | Seed 42 | Seed 7  | Seed 2024 | Spread  |
+| ---------------- | ------- | ------- | --------- | ------- |
+| Overall accuracy | PENDING | PENDING | PENDING   | PENDING |
+| Macro F1         | PENDING | PENDING | PENDING   | PENDING |
+| F1 — `question`  | PENDING | PENDING | PENDING   | PENDING |
+| F1 — `opinion`   | PENDING | PENDING | PENDING   | PENDING |
+| F1 — `solution`  | PENDING | PENDING | PENDING   | PENDING |
 
-**Did it help, and how do I know:**
-
-<!-- If it didn't, say so. Relabelling that didn't help is a genuinely
-     interesting result and earns full credit. -->
-
-
+**Did it help, and how do I know:** PENDING — an improvement experiment must be completed before making this comparison.
 
 ---
 
 ## What's Still Broken
 
-<!-- For each criterion still missed: what you'd do, and why you stopped. -->
+The initial trained model does not successfully distinguish all three categories.
 
+Although overall accuracy is 69.2%, the model predicts `question` for every test example.
 
+The `opinion` and `solution` categories both have an F1 score of zero.
 
-**The gap between what I meant my labels to capture and what the model
-learned:**
-<!-- Two sentences. Your confusion matrix is the evidence. -->
+Other outstanding issues include:
 
+- The dataset contains 173 posts instead of the requested 200.
+- The dataset is imbalanced.
+- Some labels may need manual review.
+- The baseline comparison is incomplete.
+- The agreement report is incomplete.
+- A documented improvement experiment and after-results are still required.
+- The dataset's independent pre-AI labelling requirement was not completed.
 
+**The gap between what I meant my labels to capture and what the model learned:** The intended taxonomy separates requests for help, personal viewpoints, and practical solutions. However, the model learned a prediction pattern dominated by `question`, rather than reliably distinguishing the three purposes.
 
-<!-- ═════════════════════════════════════════════════════════════════════
-
-     SUBMISSION CHECKLIST — unit 5
-
-       [ ] criteria.md has five numbered criteria, each naming a NUMBER
-       [ ] Each has a reason underneath tied to your data or taxonomy
-       [ ] labels.csv: at least 150 rows, text/label/note, ONE file not split
-       [ ] No label above 70%
-       [ ] All five unit 5 sections have real content
-       [ ] Label Taxonomy includes the decision rule for your hardest boundary
-       [ ] The Dataset includes three hard cases
-       [ ] results.json and test_split.csv committed (the notebook does this)
-       [ ] At least four new commits
-       [ ] Repository URL submitted — WRITE IT DOWN
-
-     SUBMISSION CHECKLIST — unit 6
-
-       [ ] Baseline vs. Trained table, with your prediction written beforehand
-       [ ] Run Log — Before, five criteria across three seeds
-       [ ] Confusion matrix TYPED AS A MARKDOWN TABLE
-       [ ] A verdict on every criterion
-       [ ] A diagnosis for every miss, using the agreement report as evidence
-       [ ] Agreement Report with every disagreement adjudicated
-       [ ] One improvement, with Run Log — After
-       [ ] What's Still Broken
-       [ ] results_three_seeds_before.json, results_three_seeds_after.json,
-           baseline_results.json and
-           agreement_results.json committed
-       [ ] At least four new commits
-       [ ] The SAME repository URL as last unit
-
-     Do not delete and recreate this repository.
-     ═════════════════════════════════════════════════════════════════════ -->
+This demonstrates the importance of balanced data, consistent labelling, and class-specific evaluation metrics.
 
 ---
 
-📖 **How to run this project: [RUNNING.md](RUNNING.md)**
+## Submission Checklist — Unit 5
+
+- [x] `criteria.md` contains five numbered, measurable criteria with reasons.
+- [ ] `labels.csv` contains the requested minimum number of real posts (currently 173).
+- [x] `labels.csv` contains columns `text`, `label`, and `note`.
+- [x] No label represents more than 70% of the dataset.
+- [x] README includes project description, label taxonomy, dataset, training details, and AI usage.
+- [x] Label taxonomy includes definitions, examples, and a decision rule.
+- [x] Dataset section includes three hard cases for review.
+- [ ] `results.json` and `test_split.csv` committed to Git.
+- [ ] At least four new Git commits verified.
+- [ ] GitHub repository URL submitted.
+
+## Submission Checklist — Unit 6
+
+- [ ] Baseline vs. Trained comparison completed.
+- [x] Run Log — Before across three seeds.
+- [x] Confusion matrix as a Markdown table.
+- [ ] All five criteria fully evaluated.
+- [x] Diagnoses documented for failed accuracy and class-specific F1 criteria.
+- [ ] Agreement Report with disagreements explained.
+- [ ] One improvement and Run Log — After.
+- [x] What's Still Broken section.
+- [ ] Required JSON results committed.
+- [ ] At least four new Git commits verified.
+- [ ] Same repository URL submitted.
+
+---
+
+📖 **How to run this project:** [RUNNING.md](RUNNING.md)
