@@ -261,31 +261,39 @@ All three seeds produced the same scores. This confirms consistent behavior acro
 
 ## Agreement Report
 
-**Agreement rate:** PENDING — independent 30-example agreement evaluation has not been completed or its results have not been supplied.
+**Agreement rate:** 93% (28 out of 30 posts).
+
+I compared my labels with the staff labels using `python agreement.py`. We agreed on 28 posts and disagreed on 2 posts.
 
 ### Disagreements
 
-**1.**
+**1. Different shoes and running performance**
 
-- **The post:** PENDING
-- **Staff said / I said:** PENDING
-- **My call, and why:** PENDING
-- **Which pile:** PENDING
+- **The post:** "Three of us ran the same session on the same day, different shoes, within 10 seconds of each other over 5 miles. I'm not saying shoes do nothing, but whatever they do was smaller than the noise between three people."
+- **Staff said:** `hot_take`
+- **I said:** `analysis`
+- **My call, and why:** I would keep `analysis` because the writer uses a specific comparison involving three runners, different shoes, and their running times. These measurements support the conclusion about the limited effect of shoes. However, the small sample makes the evidence less convincing.
+- **Which pile:** (c) — The rule is ambiguous here, and my interpretation is defensible.
 
-**2.**
+**2. Injury discussions on the forum**
 
-- **The post:** PENDING
-- **Staff said / I said:** PENDING
-- **My call, and why:** PENDING
-- **Which pile:** PENDING
+- **The post:** "Every injury thread on this forum is the same injury and the same three replies."
+- **Staff said:** `reaction`
+- **I said:** `hot_take`
+- **My call, and why:** I would keep `hot_take` because the writer makes a general claim about injury discussions without providing supporting evidence. The post does not clearly describe a recent personal experience or emotional reaction.
+- **Which pile:** (c) — The rule is ambiguous here, and my interpretation is defensible.
 
-**What the pattern in my disagreements tells me:** The agreement report is needed before determining whether the main labelling problem is confusion between `question` and `opinion`, confusion between `opinion` and `solution`, or inconsistent application of the taxonomy.
+### What the Disagreements Tell Me
 
-The current model results alone cannot establish the exact source of label disagreement.
+The 93% agreement rate suggests that I understood most of the staff taxonomy.
 
----
+The first disagreement shows that distinguishing `analysis` from `hot_take` can be difficult when a post includes measurements but limited evidence.
 
-## The Improvement
+The second disagreement shows that distinguishing `reaction` from `hot_take` can be difficult when a general complaint sounds like an emotional response.
+
+These disagreements highlight the importance of clear labeling rules and careful judgment.
+
+**Note:** AI assistance was used to suggest the initial labels and explain the disagreements. Therefore, this agreement score should not be presented as a fully independent human-labeling result.
 
 **What I changed:** PENDING — no completed improvement experiment has been documented.
 
